@@ -5,17 +5,17 @@ const dotenv = require('dotenv');
 const path = require('path');
 const session = require('express-session');
 
-dotenv.config();
+dotenv.config(); // ✅ Load .env file
 
-const app = express(); // ✅ Must come BEFORE any app.use()
-const PORT = 3000;
+const app = express();
+const PORT = process.env.PORT || 3000; // ✅ Use dynamic port in production
 
 // ✅ Session middleware
 app.use(session({
-    secret: 'opticare_secret_key',
+    secret: process.env.SESSION_SECRET || 'fallback_secret_key',
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false } // true only if HTTPS
+    cookie: { secure: false } // Use true if you have HTTPS
 }));
 
 // ✅ Middleware
@@ -27,12 +27,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', require('./routes/routes'));
 
 // ✅ MongoDB connection
-mongoose.connect(process.env.MONGO_URI, {
+mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-}).then(() => console.log("✅ MongoDB connected"))
-  .catch(err => console.log("❌ DB connection error:", err));
+})
+.then(() => console.log("✅ MongoDB connected"))
+.catch(err => console.error("❌ MongoDB connection error:", err));
 
+// ✅ Start server
 app.listen(PORT, () => {
-    console.log(`🚀 Server is running on http://localhost:${PORT}`);
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
 });

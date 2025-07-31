@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>OptiCare - Appointment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .appointment-card {
+      background: white;
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      color: #198754;
+      margin-bottom: 1.5rem;
+    }
+    .logout-container {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🔴 Logout Button -->
+  <div class="logout-container">
+    <a href="/logout" class="btn btn-outline-danger">Logout</a>
+  </div>
+
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6">
+        <div class="appointment-card">
+          <h2 class="text-center">📅 Book Appointment</h2>
+          <form action="/appointments" method="POST">
+            <div class="mb-3">
+              <label for="fullName" class="form-label">Full Name</label>
+              <input type="text" class="form-control" id="fullName" name="fullName" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Email address</label>
+              <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="date" class="form-label">Appointment Date</label>
+              <input type="date" class="form-control" id="date" name="date" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="time" class="form-label">Appointment Time</label>
+              <input type="time" class="form-control" id="time" name="time" required>
+            </div>
+
+            <div class="mb-4">
+              <label for="type" class="form-label">Appointment Type</label>
+              <select class="form-select" id="type" name="type" required>
+                <option value="">Select Type</option>
+                <option value="consultation">Consultation</option>
+                <option value="checkup">Check-up</option>
+                <option value="surgery">Surgery</option>
+              </select>
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-success btn-lg">Book Appointment</button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

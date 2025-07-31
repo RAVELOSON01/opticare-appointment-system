@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Receptionist Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #f8f9fa;
+      padding: 2rem;
+    }
+    .dashboard-container {
+      background: white;
+      padding: 2rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      margin-bottom: 1.5rem;
+      color: #198754;
+    }
+    .pagination-controls {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+    .logout-button {
+      margin-top: 2rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container dashboard-container">
+    <h2 class="text-center">All Appointments</h2>
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped table-hover">
+        <thead class="table-success">
+          <tr>
+            <th>Full Name</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody id="appointments"></tbody>
+      </table>
+    </div>
+
+    <div class="pagination-controls">
+      <button id="prevBtn" class="btn btn-outline-secondary" disabled>◀</button>
+      <button id="nextBtn" class="btn btn-outline-success">▶</button>
+    </div>
+
+    <!-- 🔴 Logout Button Centered Below Table -->
+    <div class="logout-button">
+      <a href="/logout" class="btn btn-danger btn-lg">Logout</a>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    let allData = [];
+    let currentPage = 0;
+    const pageSize = 10;
+
+    fetch('/all-appointments')
+      .then(res => res.json())
+      .then(data => {
+        data.sort((a, b) => {
+          const dateA = new Date(a.date);
+          const dateB = new Date(b.date);
+          if (dateA.getTime() !== dateB.getTime()) {
+            return dateB - dateA;
+          } else {
+            return a.time.localeCompare(b.time);
+          }
+        });
+
+        allData = data;
+        renderPage();
+      });
+
+    function renderPage() {
+      const tbody = document.getElementById("appointments");
+      tbody.innerHTML = "";
+
+      const start = currentPage * pageSize;
+      const end = start + pageSize;
+      const pageData = allData.slice(start, end);
+
+      pageData.forEach(app => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${app.fullName}</td>
+          <td>${app.date}</td>
+          <td>${app.time}</td>
+          <td>${app.type}</td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      document.getElementById("prevBtn").disabled = currentPage === 0;
+      document.getElementById("nextBtn").disabled = end >= allData.length;
+    }
+
+    document.getElementById("prevBtn").addEventListener("click", () => {
+      if (currentPage > 0) {
+        currentPage--;
+        renderPage();
+      }
+    });
+
+    document.getElementById("nextBtn").addEventListener("click", () => {
+      if ((currentPage + 1) * pageSize < allData.length) {
+        currentPage++;
+        renderPage();
+      }
+    });
+  </script>
+</body>
+</html>
